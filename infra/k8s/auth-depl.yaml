@@ -67,6 +67,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app: customers
+    
 # name of the Service
   name: auth-service
 spec:
