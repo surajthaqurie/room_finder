@@ -13,4 +13,4 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY . .
 
-CMD [ "pnpm" "start" ]
+CMD [ "pnpm", "dev" ]

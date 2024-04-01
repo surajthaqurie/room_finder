@@ -1,0 +1,90 @@
+
+### A Kubernetes Deployment tells Kubernetes how to create or modify instances of the pods that hold a containerized application. 
+### Deployments can help to efficiently scale the number of replica pods, enable the rollout of updated code in a controlled manner, or roll back to an earlier deployment version if necessary.
+
+# Specifies the Kubernetes API version. In this case, it’s using the “apps/v1” API version, which is appropriate for Deployments.
+apiVersion: apps/v1 
+
+# Specifies the type of Kubernetes resource. Here, it’s “Deployment,” indicating that this configuration file is defining a Deployment.
+kind: Deployment 
+
+metadata:
+  # provides the unique properties for that specific object. This could include the name, uuid, and namespace fields. 
+  name: auth-deployment 
+
+# This section defines the desired state of the Deployment.
+spec:
+  # Specifies that you want to run number of replicas of your application.
+  replicas: 1 
+  
+  # Describes the selector to match pods managed by this Deployment.
+  selector: 
+    # Specifies the labels that the Replica Set created by the Deployment should use to select the pods it manages
+    matchLabels: 
+      # In this case, pods with the label app: auth are selected.
+      app: auth
+
+  # Defines the pod template used for creating new pods.
+  template:
+  # Contains the labels to apply to the pods created from this template. 
+    metadata:
+      labels:
+       # In this case, the pods will have the label app: auth.
+        app: auth
+
+    # Describes the specification of the pods.
+    spec:
+      # This section specifies the containers to run in the pod.
+      containers:
+        # Assigns a name to the container.
+        - name: room-finder-auth
+          # Specifies the Docker image to use for this container.
+          image: surajthaqurie/roomfinder-authservice
+        
+        
+          # Defines the ports to open in the container.
+          # ports:
+          #   # Indicates that the container will listen on port 4001.
+          #   - containerPort: 4001
+          
+          
+          # # This section is used to define resource requests and limits for the container.  
+          # resources:
+          #   # Specifies the maximum amount of CPU and memory that the container is allowed to use.
+          #   limits:
+          #     memory: "256Mi" # Maximum memory allowed (256 MiB of memory)
+          #     cpu: "200m" # Maximum CPU allowed (200 milliCPU ((0.2 CPU cores))
+          #   # Specifies the initial amount of CPU and memory that the container requests when it starts.
+          #   requests:
+          #     memory: "128Mi" # Initial memory request (128 MiB of memory)
+          #     cpu: "100m" # Initial CPU request (100 milliCPU (0.1 CPU cores) initially.)
+
+---
+### Kubernetes services connect a set of pods to an abstracted service name and IP address. 
+### Services provide discovery and routing between pods. 
+### For example, services connect an application front-end to its backend, each of which running in separate deployments in a cluster.
+
+apiVersion: v1
+kind: Service
+metadata:
+# name of the Service
+  name: auth-service
+spec:
+  # Type of the service (ClusterIP, NodePort, LoadBalancer)  
+  # type: NodePort
+  
+  selector:
+  # Serves as a label which should be referenced in a Pod / Deployment manifest file
+    app: auth
+  ports:
+    # name of service port
+    - name: auth
+      # The default is TCP
+      protocol: TCP
+      # Exposes the service within the cluster. Also, other Pods use this to access the Service
+      port: 4001
+      # The service sends request while containers accept traffic on this port.
+      targetPort: 4001
+      # A static port assigned on each the node
+      # nodePort: 30163
+  
