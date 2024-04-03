@@ -40,15 +40,44 @@ spec:
         - name: room-finder-auth
           # Specifies the Docker image to use for this container.
           image: surajthaqurie/roomfinder-authservice
-        
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                   name: auth-secret
+                   key: NODE_ENV        
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                   name: auth-secret
+                   key: PORT        
+            - name: APP_URL
+              valueFrom:
+                secretKeyRef:
+                   name: auth-secret
+                   key: APP_URL        
+            - name: APP_NAME
+              valueFrom:
+                secretKeyRef:
+                   name: auth-secret
+                   key: APP_NAME        
+            - name: DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                   name: auth-secret
+                   key: DATABASE_URI        
+            - name: KAFKA_BROKER_IDS
+              valueFrom:
+                secretKeyRef:
+                   name: auth-secret
+                   key: KAFKA_BROKER_IDS        
         
           # Defines the ports to open in the container.
           # ports:
           #   # Indicates that the container will listen on port 4001.
           #   - containerPort: 4001
-          
-          
-          # # This section is used to define resource requests and limits for the container.  
+           
+          # This section is used to define resource requests and limits for the container.  
           # resources:
           #   # Specifies the maximum amount of CPU and memory that the container is allowed to use.
           #   limits:

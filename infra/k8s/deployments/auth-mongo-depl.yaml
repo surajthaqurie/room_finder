@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-mongo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-mongo
+  template:
+    metadata:
+      labels:
+        app: auth-mongo
+    spec:
+      containers:
+        - name: auth-mongo
+          image: mongo
+
+          # resources:
+          #   # Specifies the maximum amount of CPU and memory that the container is allowed to use.
+          #   limits:
+          #     memory: "256Mi" # Maximum memory allowed (256 MiB of memory)
+          #     cpu: "200m" # Maximum CPU allowed (200 milliCPU ((0.2 CPU cores))
+          #   # Specifies the initial amount of CPU and memory that the container requests when it starts.
+          #   requests:
+          #     memory: "128Mi" # Initial memory request (128 MiB of memory)
+          #     cpu: "100m" # Initial CPU request (100 milliCPU (0.1 CPU cores) initially.)
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-mongo-service
+spec:
+  selector:
+    app: auth-mongo
+  ports:
+    - name: database
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
