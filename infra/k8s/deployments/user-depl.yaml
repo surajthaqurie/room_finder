@@ -1,0 +1,80 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata:
+  name: user-deployment 
+spec:
+  replicas: 1 
+  selector: 
+    matchLabels: 
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+        - name: room-finder-user
+          image: surajthaqurie/roomfinder-userservice
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                   name: user-service-secret
+                   key: NODE_ENV        
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                   name: user-service-secret
+                   key: PORT        
+            - name: APP_URL
+              valueFrom:
+                secretKeyRef:
+                   name: user-service-secret
+                   key: APP_URL        
+            - name: APP_NAME
+              valueFrom:
+                secretKeyRef:
+                   name: user-service-secret
+                   key: APP_NAME        
+            - name: DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                   name: user-service-secret
+                   key: DATABASE_URI        
+            - name: KAFKA_BROKER_IDS
+              valueFrom:
+                secretKeyRef:
+                   name: user-service-secret
+                   key: KAFKA_BROKER_IDS        
+        
+          # Defines the ports to open in the container.
+          # ports:
+          #   # Indicates that the container will listen on port 4001.
+          #   - containerPort: 4001
+           
+          # This section is used to define resource requests and limits for the container.  
+          # resources:
+          #   # Specifies the maximum amount of CPU and memory that the container is allowed to use.
+          #   limits:
+          #     memory: "256Mi" # Maximum memory allowed (256 MiB of memory)
+          #     cpu: "200m" # Maximum CPU allowed (200 milliCPU ((0.2 CPU cores))
+          #   # Specifies the initial amount of CPU and memory that the container requests when it starts.
+          #   requests:
+          #     memory: "128Mi" # Initial memory request (128 MiB of memory)
+          #     cpu: "100m" # Initial CPU request (100 milliCPU (0.1 CPU cores) initially.)
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: user
+  name: user-service
+spec:
+  selector:
+    app: user
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 4001
+      targetPort: 4001

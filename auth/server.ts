@@ -1,17 +1,16 @@
 import { createServer, Server } from "http";
-import * as dotenv from "dotenv";
-import path from "path";
-
-import app from "./app";
+import { App } from "./app";
 import { env } from "./src/configs";
-
-dotenv.config({ path: path.join(__dirname, ".env") });
+import { Application } from "express";
 
 class CreateServer {
   public server: Server;
   private port: number;
+  private app: Application;
   constructor(port: number) {
-    this.server = createServer(app);
+    this.app = new App().app;
+
+    this.server = createServer(this.app);
     this.port = port;
     this.server.listen(this.port, (): void => {
       console.log(`Server is starting on ${env.appConfig.APP_URL} at ${new Date()} with process id:`, process.pid);

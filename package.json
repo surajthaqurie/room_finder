@@ -1,5 +1,0 @@
-{
-	"dependencies": {
-		"winston-daily-rotate-file": "^5.0.0"
-	}
-}

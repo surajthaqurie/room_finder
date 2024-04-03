@@ -1,11 +1,7 @@
 import { createServer, Server } from "http";
-import * as dotenv from "dotenv";
-import path from "path";
 
 import app from "./app";
 import { env } from "./src/configs";
-
-dotenv.config({ path: path.join(__dirname, ".env") });
 
 class CreateServer {
   public server: Server;

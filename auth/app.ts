@@ -9,7 +9,7 @@ import { DbConnection, Logger, kafkaClient } from "./src/utils";
 import { errorHandler } from "@node_helper/error-handler";
 import { AuthDeleteConsumer, AuthEnableDisableConsumer, AuthUpdateConsumer } from "src/modules/auth";
 
-class App {
+export class App {
   public app: express.Application;
 
   constructor() {
@@ -17,11 +17,13 @@ class App {
     this.configureMiddlewares();
     this.configureRoute();
     this.dbConnector();
-    this.kafkaConsumer();
+    // this.kafkaConsumer();
   }
 
   private configureMiddlewares(): void {
     this.app.use(cors());
+    this.app.use(errorHandler);
+
     this.app.use(
       morgan("dev", {
         stream: {
@@ -49,8 +51,7 @@ class App {
     new DbConnection().connect();
   }
 
-  // @ts-ignore
-  private async kafkaConsumer() {
+  async kafkaConsumer() {
     try {
       new AuthUpdateConsumer(kafkaClient).consume();
       new AuthEnableDisableConsumer(kafkaClient).consume();
@@ -60,8 +61,3 @@ class App {
     }
   }
 }
-
-const app = new App().app;
-app.use(errorHandler);
-
-export default app;

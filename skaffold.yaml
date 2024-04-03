@@ -1,0 +1,33 @@
+apiVersion: skaffold/v3alpha1
+kind: Config
+metadata:
+  name: room-finder
+manifests:
+   rawYaml:
+      - ./infra/k8s/deployments/*
+      - ./infra/k8s/secrets/*
+deploy:
+  kubectl: {}
+
+build:
+  local:
+    push: false
+  artifacts:
+    - image: surajthaqurie/roomfinder-authservice
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.ts"
+            dest: .
+    - image: surajthaqurie/roomfinder-userservice
+      context: users
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.ts"
+            dest: .
+  
+    
