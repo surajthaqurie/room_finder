@@ -1,5 +1,4 @@
 import Joi from "joi";
-import "dotenv/config";
 
 interface IEnvironment {
   NODE_ENV: string;

@@ -21,5 +21,13 @@ build:
         manual:
           - src: "*.ts"
             dest: .
+    - image: surajthaqurie/roomfinder-userservice
+      context: users
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.ts"
+            dest: .
   
     
