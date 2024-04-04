@@ -1,0 +1,54 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: kafka-cluster
+  namespace: kafka
+spec:
+  kafka:
+    version: 3.5.1
+    replicas: 3
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+    config:
+      offsets.topic.replication.factor: 3
+      # auto.create.topics.enable: false
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      default.replication.factor: 3
+      min.insync.replicas: 2
+      log.retention.hours: 168
+      inter.broker.protocol.version: "3.5"
+      log.cleanup.policy: "compact"
+      # delete.topic.enable: false
+    logging:
+      type: inline
+      loggers:
+        kafka.root.logger.level: ERROR
+        log4j.logger.kafka.coordinator.transaction: ERROR
+        log4j.logger.kafka.log.LogCleanerManager: ERROR
+        log4j.logger.kafka.request.logger: ERROR
+        log4j.logger.io.strimzi.kafka.oauth: ERROR
+        log4j.logger.org.openpolicyagents.kafka.OpaAuthorizer: ERROR
+    storage:
+      type: jbod
+      volumes:
+        - id: 0
+          type: persistent-claim
+          size: 5Gi
+          deleteClaim: false
+  zookeeper:
+    replicas: 3
+    storage:
+      type: persistent-claim
+      size: 5Gi
+      deleteClaim: false
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
