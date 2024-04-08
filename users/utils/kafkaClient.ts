@@ -7,6 +7,6 @@ export const kafkaClient = new Kafka({
   requestTimeout: 3000, // Increase the timeout value (in milliseconds)
   retry: {
     initialRetryTime: 100, // Initial retry delay (in milliseconds)
-    retries: 10, // Maximum number of retries
+    retries: 25, // Maximum number of retries
   },
 });
