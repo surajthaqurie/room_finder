@@ -11,6 +11,6 @@ export default {
     DATABASE_URL: env.DATABASE_URI,
   },
   kafkaConfig: {
-    KAFKA_BROKER_ID: env.KAFKA_BROKER_IDS,
+    KAFKA_HOST: env.KAFKA_HOST,
   },
 };
