@@ -7,7 +7,7 @@
     "test": "pnpm clear_jest && jest --watchAll --no-cache --detectOpenHandles -c ./jest.config.ts",
     "test:coverage": "jest --coverage -c ./jest.config.ts",
     "clear_jest": "jest --clearCache",
-    "dev": "nodemon --exec pnpm ts-node server.ts"
+    "dev": "nodemon --exec npx ts-node server.ts"
   },
   "keywords": [],
   "author": "",

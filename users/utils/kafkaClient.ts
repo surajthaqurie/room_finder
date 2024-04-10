@@ -1,8 +1,8 @@
-import { Kafka, logLevel } from "kafkajs";
+import { Kafka } from "kafkajs";
 import { env } from "src/configs";
 
 export const kafkaClient = new Kafka({
-  logLevel: logLevel.ERROR,
+  //   logLevel: logLevel.ERROR,
   clientId: "user-service",
   brokers: env.kafkaConfig.KAFKA_BROKER_ID.split(","),
   connectionTimeout: 30000,
