@@ -6,7 +6,7 @@ interface IEnvironment {
   APP_URL: string;
   APP_NAME: string;
   DATABASE_URI: string;
-  KAFKA_BROKER_IDS: string;
+  KAFKA_HOST: string;
 }
 
 export const envValidationSchema = Joi.object<IEnvironment, true>({
@@ -15,7 +15,7 @@ export const envValidationSchema = Joi.object<IEnvironment, true>({
   APP_URL: Joi.string().required().trim(),
   APP_NAME: Joi.string().required().trim(),
   DATABASE_URI: Joi.string().required().trim(),
-  KAFKA_BROKER_IDS: Joi.string().required().trim(),
+  KAFKA_HOST: Joi.string().required().trim(),
 }).unknown();
 
 const { error, value: dotEnv } = envValidationSchema.validate(process.env);

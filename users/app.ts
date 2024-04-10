@@ -17,7 +17,7 @@ class App {
     this.configureMiddlewares();
     this.configureRoute();
     this.dbConnector();
-    // this.kafkaConsumer();
+    this.kafkaConsumer();
   }
 
   private configureMiddlewares(): void {
@@ -40,7 +40,7 @@ class App {
     new DbConnection().connect();
   }
 
-  async kafkaConsumer() {
+  private async kafkaConsumer() {
     try {
       new UserRegisterConsumer(kafkaClient).consume();
     } catch (error) {

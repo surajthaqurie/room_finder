@@ -2,11 +2,13 @@ import { Kafka } from "kafkajs";
 import { env } from "src/configs";
 
 export const kafkaClient = new Kafka({
+  //   logLevel: logLevel.ERROR,
   clientId: "user-service",
   brokers: env.kafkaConfig.KAFKA_BROKER_ID.split(","),
-  requestTimeout: 3000, // Increase the timeout value (in milliseconds)
+  connectionTimeout: 30000,
+  requestTimeout: 600000, // Increase the timeout value (in milliseconds)
   retry: {
-    initialRetryTime: 100, // Initial retry delay (in milliseconds)
-    retries: 10, // Maximum number of retries
+    initialRetryTime: 600000, // Initial retry delay (in milliseconds)
+    retries: 8, // Maximum number of retries
   },
 });

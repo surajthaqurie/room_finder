@@ -17,7 +17,7 @@ export class App {
     this.configureMiddlewares();
     this.configureRoute();
     this.dbConnector();
-    // this.kafkaConsumer();
+    this.kafkaConsumer();
   }
 
   private configureMiddlewares(): void {
@@ -51,7 +51,7 @@ export class App {
     new DbConnection().connect();
   }
 
-  async kafkaConsumer() {
+  private async kafkaConsumer() {
     try {
       new AuthUpdateConsumer(kafkaClient).consume();
       new AuthEnableDisableConsumer(kafkaClient).consume();

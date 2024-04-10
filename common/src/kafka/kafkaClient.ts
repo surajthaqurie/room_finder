@@ -8,10 +8,11 @@ export class KafkaConfig {
     const kafka = new Kafka({
       clientId: "auth-client",
       brokers: ["localhost:9093", "localhost:9095", "localhost:9097"],
-      requestTimeout: 3000, // Increase the timeout value (in milliseconds)
+      connectionTimeout: 30000,
+      requestTimeout: 600000, // Increase the timeout value (in milliseconds)
       retry: {
-        initialRetryTime: 100, // Initial retry delay (in milliseconds)
-        retries: 10, // Maximum number of retries
+        initialRetryTime: 600000, // Initial retry delay (in milliseconds)
+        retries: 8, // Maximum number of retries
       },
     });
 

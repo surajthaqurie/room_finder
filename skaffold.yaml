@@ -6,6 +6,7 @@ manifests:
    rawYaml:
       - ./infra/k8s/deployments/*
       - ./infra/k8s/secrets/*
+      - ./infra/k8s/kafka/*
 deploy:
   kubectl: {}
 

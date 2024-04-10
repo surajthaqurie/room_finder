@@ -1,16 +1,15 @@
 FROM node:alpine
 
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
-
+RUN npm i npm@latest -g
 
 WORKDIR /app
 
-COPY pnpm-lock.yaml package.json ./
+COPY package*.* ./
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN npm install && npm cache clean --force
 
 COPY . .
 
-CMD [ "pnpm", "dev" ]
+EXPOSE 4000
+
+CMD [ "npm","run", "dev" ]

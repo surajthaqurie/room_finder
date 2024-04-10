@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-ui-deployment
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-ui
+  template:
+    metadata:
+      labels:
+        network/kafka-network: "true"
+        app: kafka-ui
+    spec:
+      containers:
+        - name: kafka-ui
+          image: provectuslabs/kafka-ui
+          ports:
+            - containerPort: 8080
+          env:
+            # the name of the Kafka cluster that KafkaUI will connect.
+            - name: KAFKA_CLUSTERS_0_NAME
+              value: "kafka-prod-cluster"
+              # represents the hostname or service name of the Kafka bootstrap server in your environment.
+            - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+              value: kafka-cluster-kafka-bootstrap:9092 #"PLAINTEXT://kafka-cluster-kafka-bootstrap:9092,TLS://kafka-cluster-kafka-bootstrap:9093"
+            - name: SERVER_SERVLET_CONTEXT_PATH # value: "/kafka-ui"
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-ui-secret
+                  key: BASE_URL
+            - name: AUTH_TYPE
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-ui-secret
+                  key: AUTH_TYPE
+            - name: SPRING_SECURITY_USER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-ui-secret
+                  key: SPRING_SECURITY_USER_NAME
+            - name: SPRING_SECURITY_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-ui-secret
+                  key: SPRING_SECURITY_USER_PASSWORD
+                  
+          # resources:
+          #   requests:
+          #     cpu: "0.5"
+          #     memory: 128Mi
+          #   limits:
+          #     cpu: "1"
+          #     memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-ui-service
+  namespace: kafka
+spec:
+  selector:
+    app: kafka-ui
+  ports:
+    - name: kafka-ui
+      protocol: TCP
+      port: 8080
+      targetPort: 8080

@@ -11,6 +11,8 @@ kind: Deployment
 metadata:
   # provides the unique properties for that specific object. This could include the name, uuid, and namespace fields. 
   name: auth-deployment 
+  # organize clusters into virtual sub-clusters — they can be helpful when different teams or projects share a Kubernetes cluster
+  namespace: kafka
 
 # This section defines the desired state of the Deployment.
 spec:
@@ -66,11 +68,11 @@ spec:
                 secretKeyRef:
                    name: auth-service-secret
                    key: DATABASE_URI        
-            - name: KAFKA_BROKER_IDS
+            - name: KAFKA_HOST
               valueFrom:
                 secretKeyRef:
                    name: auth-service-secret
-                   key: KAFKA_BROKER_IDS        
+                   key: KAFKA_HOST        
         
           # Defines the ports to open in the container.
           # ports:
@@ -101,6 +103,8 @@ metadata:
     
 # name of the Service
   name: auth-service
+  namespace: kafka
+
 spec:
   # Type of the service (ClusterIP, NodePort, LoadBalancer)  
   # type: NodePort (default:ClusterIP)
