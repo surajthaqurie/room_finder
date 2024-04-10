@@ -7,6 +7,7 @@ manifests:
       - ./infra/k8s/deployments/*
       - ./infra/k8s/secrets/*
       - ./infra/k8s/kafka/*
+      - ./infra/k8s/ingress-nginx/*
 deploy:
   kubectl: {}
 
