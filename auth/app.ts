@@ -7,7 +7,15 @@ import path from "path";
 import appRouter from "./src/routes";
 import { DbConnection, Logger, kafkaClient } from "./src/utils";
 import { errorHandler } from "@node_helper/error-handler";
-import { AuthDeleteConsumer, AuthEnableDisableConsumer, AuthUpdateConsumer } from "src/modules/auth";
+import {
+  AuthDeleteConsumer,
+  AuthEnableDisableConsumer,
+  AuthUpdateConsumer,
+  AuthUserCreateTopic,
+  AuthUserDeleteTopic,
+  AuthUserEnableDisableTopic,
+  AuthUserUpdateTopic,
+} from "src/modules/auth";
 
 export class App {
   public app: express.Application;
@@ -17,7 +25,7 @@ export class App {
     this.configureMiddlewares();
     this.configureRoute();
     this.dbConnector();
-    this.kafkaConsumer();
+    this.kafkaConfig();
     this.errorHandlerMiddleware();
   }
 
@@ -49,6 +57,18 @@ export class App {
 
   private dbConnector(): void {
     new DbConnection().connect();
+  }
+
+  private async kafkaConfig() {
+    await this.kafkaTopicCreator();
+    await this.kafkaConsumer();
+  }
+
+  private async kafkaTopicCreator() {
+    new AuthUserCreateTopic(kafkaClient).createTopicIfNotExits(1);
+    new AuthUserUpdateTopic(kafkaClient).createTopicIfNotExits(1);
+    new AuthUserEnableDisableTopic(kafkaClient).createTopicIfNotExits(1);
+    new AuthUserDeleteTopic(kafkaClient).createTopicIfNotExits(1);
   }
 
   private async kafkaConsumer() {
