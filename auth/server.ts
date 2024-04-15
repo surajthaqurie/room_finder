@@ -27,4 +27,9 @@ process.on("SIGTERM", (): void => {
   server.close();
 });
 
+process.on("SIGINT", (): void => {
+  console.log("Server is closing at ", new Date());
+  server.close();
+});
+
 export default server;

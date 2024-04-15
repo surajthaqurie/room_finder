@@ -1,7 +1,7 @@
 import { Message } from "kafkajs";
 import mongoose from "mongoose";
 import { KAFKA_TOPIC } from "src/common/enum";
-import { BaseProducer, kafkaClient } from "utils";
+import { BaseProducer, kafkaClient } from "src/utils";
 
 export class UserUpdateProducer extends BaseProducer<{ data: Message[] }> {
   topic: KAFKA_TOPIC = KAFKA_TOPIC.USER_UPDATE;
