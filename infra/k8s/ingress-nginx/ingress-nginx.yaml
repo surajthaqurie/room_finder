@@ -4,11 +4,10 @@ metadata:
   name: ingress-nginx
   namespace: kafka
   annotations:
-    # Kubernetes needs to know which Ingress controller should be responsible for managing that resource.
-    # kubernetes.io/ingress.class: nginx
     # The path will match according to starting path
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
+  # Kubernetes needs to know which Ingress controller should be responsible for managing that resource.
   ingressClassName: nginx
   rules:
     - host: dev.roomfinder
