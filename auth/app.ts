@@ -18,11 +18,11 @@ export class App {
     this.configureRoute();
     this.dbConnector();
     this.kafkaConsumer();
+    this.errorHandlerMiddleware();
   }
 
   private configureMiddlewares(): void {
     this.app.use(cors());
-    this.app.use(errorHandler);
 
     this.app.use(
       morgan("dev", {
@@ -59,5 +59,9 @@ export class App {
     } catch (error) {
       console.error("consumed error:", error);
     }
+  }
+
+  private async errorHandlerMiddleware() {
+    this.app.use(errorHandler);
   }
 }
