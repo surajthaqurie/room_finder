@@ -7,7 +7,7 @@ import path from "path";
 import appRouter from "./src/routes";
 import { DbConnection, Logger, kafkaClient } from "./src/utils";
 import { errorHandler } from "@node_helper/error-handler";
-import { AuthDeleteConsumer, AuthEnableDisableConsumer, AuthUpdateConsumer } from "src/modules/auth";
+import { AuthDeleteConsumer, AuthEnableDisableConsumer, AuthUpdateConsumer, AuthUserCreateTopic } from "src/modules/auth";
 
 export class App {
   public app: express.Application;
@@ -17,12 +17,12 @@ export class App {
     this.configureMiddlewares();
     this.configureRoute();
     this.dbConnector();
-    this.kafkaConsumer();
+    this.kafkaConfig();
+    this.errorHandlerMiddleware();
   }
 
   private configureMiddlewares(): void {
     this.app.use(cors());
-    this.app.use(errorHandler);
 
     this.app.use(
       morgan("dev", {
@@ -51,6 +51,15 @@ export class App {
     new DbConnection().connect();
   }
 
+  private async kafkaConfig() {
+    await this.kafkaTopicCreator();
+    await this.kafkaConsumer();
+  }
+
+  private async kafkaTopicCreator() {
+    new AuthUserCreateTopic(kafkaClient).createTopicIfNotExits(1);
+  }
+
   private async kafkaConsumer() {
     try {
       new AuthUpdateConsumer(kafkaClient).consume();
@@ -59,5 +68,9 @@ export class App {
     } catch (error) {
       console.error("consumed error:", error);
     }
+  }
+
+  private async errorHandlerMiddleware() {
+    this.app.use(errorHandler);
   }
 }

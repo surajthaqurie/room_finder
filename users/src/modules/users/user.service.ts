@@ -1,7 +1,7 @@
 import { IUserUpdatePayload, IUserRegisterPayload } from "src/common/interfaces";
 import { USER_MESSAGE_CONSTANT } from "../../common/constant";
 import User from "./user.schema";
-import { paginationQuery } from "utils";
+import { paginationQuery } from "src/utils";
 import { BadRequestError, ConflictRequestError, NotFoundError } from "@node_helper/error-handler";
 import { UserUpdateProducer, UserEnableDisableProducer, UserDeleteProducer } from "./user.producer";
 

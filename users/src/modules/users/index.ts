@@ -5,3 +5,4 @@ export * from "./user.route";
 export * from "./user.schema";
 export * from "./user.service";
 export * from "./user.validation";
+export * from "./user.kafkaTopic";

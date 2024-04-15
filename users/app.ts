@@ -5,11 +5,11 @@ import helmet from "helmet";
 import path from "path";
 
 import appRouter from "./src/routes";
-import { DbConnection, kafkaClient } from "./utils";
+import { DbConnection, kafkaClient } from "./src/utils";
 import { errorHandler } from "@node_helper/error-handler";
-import { UserRegisterConsumer } from "src/modules/users";
+import { UserDeleteTopic, UserEnableDisableTopic, UserRegisterConsumer, UserUpdateTopic } from "src/modules/users";
 
-class App {
+export class App {
   public app: express.Application;
 
   constructor() {
@@ -17,7 +17,8 @@ class App {
     this.configureMiddlewares();
     this.configureRoute();
     this.dbConnector();
-    this.kafkaConsumer();
+    this.kafkaConfig();
+    this.errorHandlerMiddleware();
   }
 
   private configureMiddlewares(): void {
@@ -40,6 +41,17 @@ class App {
     new DbConnection().connect();
   }
 
+  private async kafkaConfig() {
+    await this.kafkaTopicCreator();
+    await this.kafkaConsumer();
+  }
+
+  private async kafkaTopicCreator() {
+    new UserUpdateTopic(kafkaClient).createTopicIfNotExits(1);
+    new UserEnableDisableTopic(kafkaClient).createTopicIfNotExits(1);
+    new UserDeleteTopic(kafkaClient).createTopicIfNotExits(1);
+  }
+
   private async kafkaConsumer() {
     try {
       new UserRegisterConsumer(kafkaClient).consume();
@@ -47,10 +59,8 @@ class App {
       console.error("consumed error:", error);
     }
   }
+
+  private async errorHandlerMiddleware() {
+    this.app.use(errorHandler);
+  }
 }
-
-const app = new App().app;
-
-app.use(errorHandler);
-
-export default app;

@@ -1,6 +1,6 @@
 import { KAFKA_TOPIC } from "src/common/enum";
 import { IUserRegister } from "src/common/interfaces";
-import { BaseConsumer } from "utils";
+import { BaseConsumer } from "src/utils";
 import { UserService } from "./user.service";
 import { Kafka } from "kafkajs";
 
