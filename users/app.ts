@@ -8,6 +8,7 @@ import appRouter from "./src/routes";
 import { DbConnection, kafkaClient } from "./src/utils";
 import { errorHandler } from "@node_helper/error-handler";
 import { UserDeleteTopic, UserEnableDisableTopic, UserRegisterConsumer, UserUpdateTopic } from "src/modules/users";
+import { dbErrorHandler } from "src/middleware";
 
 export class App {
   public app: express.Application;
@@ -61,6 +62,7 @@ export class App {
   }
 
   private async errorHandlerMiddleware() {
+    this.app.use(dbErrorHandler);
     this.app.use(errorHandler);
   }
 }
