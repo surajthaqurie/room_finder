@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-nginx
+  namespace: kafka
+  annotations:
+    # The path will match according to starting path
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  # Kubernetes needs to know which Ingress controller should be responsible for managing that resource.
+  ingressClassName: nginx
+  rules:
+    - host: dev.roomfinder
+      http:
+        paths:
+          - path: /api/v1/auth/?(.*) 
+            pathType: Exact
+            backend:
+              service:
+                name: auth-service
+                port: 
+                  number: 4001
+          - path: /api/v1/users/?(.*) 
+            pathType: Exact
+            backend:
+              service:
+                name: user-service
+                port: 
+                  number: 4001
+
+              
+
+           
