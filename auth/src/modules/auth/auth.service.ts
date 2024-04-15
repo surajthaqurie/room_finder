@@ -24,6 +24,7 @@ export class AuthService {
     const hashPassword = await this.bcryptHelper.generateHashPassword(payload.password as string);
 
     const user = await Auth.create({
+      _id: "123",
       password: hashPassword,
       email: payload.email,
       username: payload.username,
