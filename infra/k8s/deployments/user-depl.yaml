@@ -37,11 +37,11 @@ spec:
                 secretKeyRef:
                    name: user-service-secret
                    key: APP_NAME        
-            - name: DATABASE_URI
+            - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                    name: user-service-secret
-                   key: DATABASE_URI        
+                   key: DATABASE_URL        
             - name: KAFKA_HOST
               valueFrom:
                 secretKeyRef:
