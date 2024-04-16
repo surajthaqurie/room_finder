@@ -7,25 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id        String   @id @unique @default(uuid())
-  stars     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Posts     Posts[]
-}
-
 model Posts {
   id          String   @id @unique @default(uuid())
   title       String
   description String
-  locatio     String
+  location    String
   status      Status   @default(AVAILABLE)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  userId   String
-  postedBy Users  @relation(fields: [userId], references: [id])
+  userId String
 }
 
 enum Status {

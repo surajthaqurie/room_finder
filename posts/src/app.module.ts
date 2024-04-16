@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { UtilsModule } from './utils/utils.module';
+import { PrismaModule } from './utils';
 import { validateEnv } from './app-env-validation';
+import { PostModule } from './components/post/post.module';
 
 @Module({
     imports: [
@@ -13,7 +14,8 @@ import { validateEnv } from './app-env-validation';
                 limit: 10
             }
         ]),
-        UtilsModule
+        PrismaModule,
+        PostModule
     ],
     controllers: [],
     providers: []
