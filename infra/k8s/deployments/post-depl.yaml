@@ -1,0 +1,86 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata:
+  name: post-deployment 
+  namespace: kafka
+spec:
+  replicas: 1 
+  selector: 
+    matchLabels: 
+      app: post
+  template:
+    metadata:
+      labels:
+        app: post
+    spec:
+      containers:
+        - name: room-finder-post
+          image: surajthaqurie/roomfinder-postservice
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", npx prisma migrate; npx prisma generate;]
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                   name: post-service-secret
+                   key: NODE_ENV        
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                   name: post-service-secret
+                   key: PORT        
+            - name: APP_URL
+              valueFrom:
+                secretKeyRef:
+                   name: post-service-secret
+                   key: APP_URL        
+            - name: APP_NAME
+              valueFrom:
+                secretKeyRef:
+                   name: post-service-secret
+                   key: APP_NAME        
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                   name: post-service-secret
+                   key: DATABASE_URL        
+            - name: KAFKA_HOST
+              valueFrom:
+                secretKeyRef:
+                   name: post-service-secret
+                   key: KAFKA_HOST        
+        
+          # Defines the ports to open in the container.
+          # ports:
+          #   # Indicates that the container will listen on port 4003.
+          #   - containerPort: 4003
+           
+          # This section is used to define resource requests and limits for the container.  
+          # resources:
+          #   # Specifies the maximum amount of CPU and memory that the container is allowed to use.
+          #   limits:
+          #     memory: "256Mi" # Maximum memory allowed (256 MiB of memory)
+          #     cpu: "200m" # Maximum CPU allowed (200 milliCPU ((0.2 CPU cores))
+          #   # Specifies the initial amount of CPU and memory that the container requests when it starts.
+          #   requests:
+          #     memory: "128Mi" # Initial memory request (128 MiB of memory)
+          #     cpu: "100m" # Initial CPU request (100 milliCPU (0.1 CPU cores) initially.)
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: post
+  name: post-service
+  namespace: kafka
+spec:
+  selector:
+    app: post
+  ports:
+    - name: post
+      protocol: TCP
+      port: 4003
+      targetPort: 4003

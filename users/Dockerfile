@@ -1,6 +1,4 @@
-FROM node:alpine
-
-RUN npm i npm@latest -g
+FROM node:18-alpine
 
 WORKDIR /app
 

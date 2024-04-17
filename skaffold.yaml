@@ -31,5 +31,13 @@ build:
         manual:
           - src: "*.ts"
             dest: .
+    - image: surajthaqurie/roomfinder-postservice
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.ts"
+            dest: .
   
     
