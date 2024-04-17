@@ -16,6 +16,10 @@ spec:
       containers:
         - name: room-finder-post
           image: surajthaqurie/roomfinder-postservice
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", npx prisma migrate; npx prisma generate;]
           env:
             - name: NODE_ENV
               valueFrom:
