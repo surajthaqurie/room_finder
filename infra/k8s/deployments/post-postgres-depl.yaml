@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-postgres-deployment
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-postgres
+  template:
+    metadata:
+      labels:
+        app: post-postgres
+    spec:
+      containers:
+        - name: post-postgres
+          image: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-service-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-service-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-service-secret
+                  key: POST_SERVICE_DB
+
+          # resources:
+          #   # Specifies the maximum amount of CPU and memory that the container is allowed to use.
+          #   limits:
+          #     memory: "256Mi" # Maximum memory allowed (256 MiB of memory)
+          #     cpu: "200m" # Maximum CPU allowed (200 milliCPU ((0.2 CPU cores))
+          #   # Specifies the initial amount of CPU and memory that the container requests when it starts.
+          #   requests:
+          #     memory: "128Mi" # Initial memory request (128 MiB of memory)
+          #     cpu: "100m" # Initial CPU request (100 milliCPU (0.1 CPU cores) initially.)
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-postgres-service
+  namespace: kafka
+spec:
+  selector:
+    app: post-postgres
+  ports:
+    - name: database
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
