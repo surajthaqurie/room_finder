@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule } from "@nestjs/throttler";
-import { PrismaModule } from "./utils";
+import { KafkaModule, PrismaModule } from "./utils";
 import { validateEnv } from "./app-env-validation";
 import { PostModule } from "./components/post/post.module";
 
@@ -15,7 +15,8 @@ import { PostModule } from "./components/post/post.module";
             }
         ]),
         PrismaModule,
-        PostModule
+        PostModule,
+        KafkaModule
     ],
     controllers: [],
     providers: []
