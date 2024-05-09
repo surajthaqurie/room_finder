@@ -16,21 +16,28 @@ export class PrismaExceptionFilter extends BaseExceptionFilter {
         const name = exception.meta?.target as string;
         const responseJson = {
             success: false,
-            message: "Internal Server Error"
+            message: "Internal Server Error",
+            status: HttpStatus.INTERNAL_SERVER_ERROR
         };
         switch (exception.code) {
             case "P2002":
                 responseJson["message"] = `This ${name} already exists. Please choose different ${name}`;
+                responseJson["status"] = HttpStatus.BAD_REQUEST;
+
                 response.status(HttpStatus.BAD_REQUEST).json(responseJson);
                 break;
 
             case "P2014":
                 responseJson["message"] = `Invalid ID: ${name}`;
+                responseJson["status"] = HttpStatus.BAD_REQUEST;
+
                 response.status(HttpStatus.BAD_REQUEST).json(responseJson);
                 break;
 
             case "P2006":
                 responseJson["message"] = `The provide value for ${name} is invalid`;
+                responseJson["status"] = HttpStatus.BAD_REQUEST;
+
                 response.status(HttpStatus.BAD_REQUEST).json(responseJson);
                 break;
 

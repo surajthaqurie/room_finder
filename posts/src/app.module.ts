@@ -4,6 +4,7 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { KafkaModule, PrismaModule } from "./utils";
 import { validateEnv } from "./app-env-validation";
 import { PostModule } from "./components/post/post.module";
+import { UserModule } from "./components/users/user.module";
 
 @Module({
     imports: [
@@ -16,7 +17,8 @@ import { PostModule } from "./components/post/post.module";
         ]),
         PrismaModule,
         PostModule,
-        KafkaModule
+        KafkaModule,
+        UserModule
     ],
     controllers: [],
     providers: []

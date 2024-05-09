@@ -5,7 +5,7 @@ import { Response } from "express";
 type IErrorResponse = { message: string };
 interface IResponseJson {
     success: boolean;
-    statusCode: number;
+    status: number;
     message: string;
 }
 
@@ -25,7 +25,7 @@ export class AppExceptionFilter implements ExceptionFilter {
 
             const responseJson = {
                 success: false,
-                statusCode,
+                status: statusCode,
                 message: typeof errResponse === "object" ? errResponse["message"] : errResponse
             };
 
@@ -34,7 +34,7 @@ export class AppExceptionFilter implements ExceptionFilter {
         } else {
             const responseJson = {
                 success: false,
-                statusCode,
+                status: statusCode,
                 message: "Internal server error: " + errorMessage
             };
 
