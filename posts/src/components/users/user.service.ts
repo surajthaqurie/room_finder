@@ -2,6 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { IUserCreate } from "./Interfaces/user.interface";
 import { PrismaService } from "src/utils/prisma/prisma.service";
 
+@Injectable()
 export class UserService {
     constructor(private prismaService: PrismaService) {}
 

@@ -25,7 +25,7 @@ export abstract class BaseProducer<T extends { data: Message[] }> {
     }
 }
 
-/* 
+/* TODO: verify once with injectable(useFactory)
 export abstract class BaseProducer {
   protected readonly producer: Producer;
   private logger: Logger;

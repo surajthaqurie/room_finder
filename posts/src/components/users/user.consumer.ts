@@ -17,7 +17,7 @@ export class UserCreateConsumer extends BaseConsumer<{ data: IUserCreate }> impl
 
     constructor(
         kafka: Kafka,
-        private userService: UserService
+        private readonly userService: UserService
     ) {
         super(kafka);
         this.topicCreator = new PostCreateUserTopic(kafka);
