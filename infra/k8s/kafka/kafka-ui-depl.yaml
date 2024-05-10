@@ -26,7 +26,7 @@ spec:
               # represents the hostname or service name of the Kafka bootstrap server in your environment.
             - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
               value: kafka-cluster-kafka-bootstrap:9092 #"PLAINTEXT://kafka-cluster-kafka-bootstrap:9092,TLS://kafka-cluster-kafka-bootstrap:9093"
-            - name: SERVER_SERVLET_CONTEXT_PATH # value: "/k8s"
+            - name: SERVER_SERVLET_CONTEXT_PATH # value: "/kafka-ui"
               valueFrom:
                 secretKeyRef:
                   name: kafka-ui-secret

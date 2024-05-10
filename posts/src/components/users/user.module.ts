@@ -13,7 +13,7 @@ const PostUserCreateConsumerFactory: Provider = {
 };
 
 @Module({
-    imports: [PrismaModule, KafkaModule],
+    imports: [PrismaModule],
     providers: [
         PostUserCreateConsumerFactory,
         UserService
