@@ -7,77 +7,78 @@ import DailyRotateFile from "winston-daily-rotate-file";
 // TODO: Use this error logger to error handler
 // TODO: Use this info logger to success response
 
+// FIXME: Response is not display if error occurred
 export const Logger = class AppLogger {
-  static getLogger = (service = "AppLogger") => {
-    const logger = createLogger({
-      level: env.appConfig.NODE_ENV === "development" ? "debug" : "info",
-      exitOnError: false,
-      defaultMeta: { service: [service] },
-      format: format.combine(
-        format.timestamp(),
-        format.ms(),
-        format.errors()
-        //format.logstash()
-      ),
-      transports: [
-        new transports.Console({
-          format: format.combine(format.colorize({ all: true }), format.simple()),
-        }),
-        AppLogger.httpTransport(),
-        AppLogger.infoTransport(),
-        AppLogger.errorTransport(),
-      ],
+    static getLogger = (service = "AppLogger") => {
+        const logger = createLogger({
+            level: env.appConfig.NODE_ENV === "development" ? "debug" : "info",
+            exitOnError: false,
+            defaultMeta: { service: [service] },
+            format: format.combine(
+                format.timestamp(),
+                format.ms(),
+                format.errors()
+                //format.logstash()
+            ),
+            transports: [
+                new transports.Console({
+                    format: format.combine(format.colorize({ all: true }), format.simple())
+                }),
+                AppLogger.httpTransport(),
+                AppLogger.infoTransport(),
+                AppLogger.errorTransport()
+            ]
 
-      // exceptionHandlers: [new transports.File({ filename: '../logs/exceptions.log' })],
-      // rejectionHandlers: [new transports.File({ filename: '../logs/rejections.log' })],
-    });
+            // exceptionHandlers: [new transports.File({ filename: '../logs/exceptions.log' })],
+            // rejectionHandlers: [new transports.File({ filename: '../logs/rejections.log' })],
+        });
 
-    return logger;
-  };
+        return logger;
+    };
 
-  static httpTransport() {
-    const httpFilter = format((log, opts) => (log.level === "http" ? log : false));
-    return new DailyRotateFile({
-      filename: "../logs/http-%DATE%.log",
-      datePattern: "DD-MM-YYYY",
-      zippedArchive: true,
-      auditFile: "../logs/http-audit.json",
-      maxSize: "2m",
-      maxFiles: "1d",
-      level: "http",
-      format: format.combine(httpFilter(), format.timestamp(), format.json()),
-    });
-  }
+    static httpTransport() {
+        const httpFilter = format((log, opts) => (log.level === "http" ? log : false));
+        return new DailyRotateFile({
+            filename: "../logs/http-%DATE%.log",
+            datePattern: "DD-MM-YYYY",
+            zippedArchive: true,
+            auditFile: "../logs/http-audit.json",
+            maxSize: "2m",
+            maxFiles: "1d",
+            level: "http",
+            format: format.combine(httpFilter(), format.timestamp(), format.json())
+        });
+    }
 
-  static infoTransport() {
-    const infoFilter = format((log, opts) => (log.level === "info" ? log : false));
-    return new DailyRotateFile({
-      level: "info",
-      filename: "../logs/info-%DATE%.log",
-      datePattern: "DD-MM-YYYY",
-      auditFile: "../logs/info-audit.json",
-      zippedArchive: true,
-      maxSize: "2m",
-      maxFiles: "1d",
-      format: format.combine(infoFilter(), format.timestamp(), format.json()),
-    });
-  }
+    static infoTransport() {
+        const infoFilter = format((log, opts) => (log.level === "info" ? log : false));
+        return new DailyRotateFile({
+            level: "info",
+            filename: "../logs/info-%DATE%.log",
+            datePattern: "DD-MM-YYYY",
+            auditFile: "../logs/info-audit.json",
+            zippedArchive: true,
+            maxSize: "2m",
+            maxFiles: "1d",
+            format: format.combine(infoFilter(), format.timestamp(), format.json())
+        });
+    }
 
-  static errorTransport() {
-    const errorFilter = format((log, opts) => (log.level === "error" ? log : false));
-    return new DailyRotateFile({
-      level: "error",
-      filename: "../logs/error-%DATE%.log",
-      datePattern: "DD-MM-YYYY",
-      auditFile: "../logs/error-audit.json",
-      zippedArchive: true,
-      handleExceptions: true,
-      handleRejections: true,
-      maxSize: "2m",
-      maxFiles: "1d",
-      format: format.combine(errorFilter(), format.timestamp(), format.json()),
-    });
-  }
+    static errorTransport() {
+        const errorFilter = format((log, opts) => (log.level === "error" ? log : false));
+        return new DailyRotateFile({
+            level: "error",
+            filename: "../logs/error-%DATE%.log",
+            datePattern: "DD-MM-YYYY",
+            auditFile: "../logs/error-audit.json",
+            zippedArchive: true,
+            handleExceptions: true,
+            handleRejections: true,
+            maxSize: "2m",
+            maxFiles: "1d",
+            format: format.combine(errorFilter(), format.timestamp(), format.json())
+        });
+    }
 }.getLogger;
 
 // https://dev.to/adeyemiadekore2/file-logging-in-nodejs-5e8l
