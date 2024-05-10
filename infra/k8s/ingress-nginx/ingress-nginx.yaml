@@ -27,6 +27,13 @@ spec:
                 name: user-service
                 port: 
                   number: 4001
+          - path: /k8s
+            pathType: Prefix
+            backend:
+              service:
+                name: kafka-ui-service
+                port: 
+                  number: 8080
 
               
 

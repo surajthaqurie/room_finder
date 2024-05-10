@@ -2,13 +2,13 @@ interface IAppResponse<T> {
     success: boolean;
     data: T;
     message: string;
-    statusCode: number;
+    status: number;
 }
 
 export class AppResponse<T> implements IAppResponse<T> {
     data: T;
     message: string;
-    statusCode: number;
+    status: number;
     success: boolean;
 
     constructor(message: string) {
@@ -22,7 +22,7 @@ export class AppResponse<T> implements IAppResponse<T> {
     }
 
     setStatus(status: number): this {
-        this.statusCode = status;
+        this.status = status;
         return this;
     }
 }
