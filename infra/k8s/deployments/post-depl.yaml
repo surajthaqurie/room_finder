@@ -23,8 +23,8 @@ spec:
           env:
             - name: NODE_ENV
               valueFrom:
-                secretKeyRef:
-                   name: post-service-secret
+                configMapKeyRef:
+                   name: app-config
                    key: NODE_ENV        
             - name: PORT
               valueFrom:
@@ -38,8 +38,8 @@ spec:
                    key: APP_URL        
             - name: APP_NAME
               valueFrom:
-                secretKeyRef:
-                   name: post-service-secret
+                configMapKeyRef:
+                   name: app-config
                    key: APP_NAME        
             - name: DATABASE_URL
               valueFrom:
