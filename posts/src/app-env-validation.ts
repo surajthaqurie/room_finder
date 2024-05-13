@@ -1,11 +1,11 @@
-import { plainToInstance } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsNumber, IsString, Max, Min, validateSync } from 'class-validator';
+import { plainToInstance } from "class-transformer";
+import { IsEnum, IsNotEmpty, IsNumber, IsString, Max, Min, validateSync } from "class-validator";
 
 enum Environment {
-    DEVELOPMENT = 'development',
-    PRODUCTION = 'production',
-    TEST = 'test',
-    DEBUG = 'debug'
+    DEVELOPMENT = "development",
+    PRODUCTION = "production",
+    TEST = "test",
+    DEBUG = "debug"
 }
 
 class EnvironmentVariables {
@@ -31,6 +31,14 @@ class EnvironmentVariables {
     @IsString()
     @IsNotEmpty()
     KAFKA_HOST: string;
+
+    @IsString()
+    @IsNotEmpty()
+    JWT_SECRET: string;
+
+    @IsString()
+    @IsNotEmpty()
+    JWT_EXPIRES: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {
@@ -41,7 +49,7 @@ export function validateEnv(config: Record<string, unknown>) {
         for (let error of errors) {
             if (error.constraints) {
                 const errorMessage = Object.values(error.constraints)[0];
-                throw new Error(errorMessage + ' in the env file.');
+                throw new Error(errorMessage + " in the env file.");
             }
         }
     }

@@ -51,6 +51,21 @@ spec:
                 secretKeyRef:
                    name: post-service-secret
                    key: KAFKA_HOST        
+            - name: JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                   name: app-config
+                   key: JWT_SECRET        
+            - name: JWT_EXPIRES
+              valueFrom:
+                configMapKeyRef:
+                   name: app-config
+                   key: JWT_EXPIRES        
+            - name: JWT_HASH_ALGORITHM
+              valueFrom:
+                configMapKeyRef:
+                   name: app-config
+                   key: JWT_HASH_ALGORITHM            
         
           # Defines the ports to open in the container.
           # ports:
