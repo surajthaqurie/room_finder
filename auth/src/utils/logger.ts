@@ -4,10 +4,8 @@ import DailyRotateFile from "winston-daily-rotate-file";
 
 // Morgan
 
-// TODO: Use this error logger to error handler
+// TODO: Use this error logger on error handler
 // TODO: Use this info logger to success response
-
-// FIXME: Response is not display if error occurred
 export const Logger = class AppLogger {
     static getLogger = (service = "AppLogger") => {
         const logger = createLogger({
