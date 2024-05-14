@@ -13,7 +13,7 @@ export class PrismaExceptionFilter extends BaseExceptionFilter {
         const url = request.url;
         const now = Date.now();
 
-        const name = exception.meta?.target as string;
+        const name = exception.meta?.column || exception.meta?.target;
         const responseJson = {
             success: false,
             message: "Internal Server Error",
@@ -36,6 +36,13 @@ export class PrismaExceptionFilter extends BaseExceptionFilter {
 
             case "P2006":
                 responseJson["message"] = `The provide value for ${name} is invalid`;
+                responseJson["status"] = HttpStatus.BAD_REQUEST;
+
+                response.status(HttpStatus.BAD_REQUEST).json(responseJson);
+                break;
+
+            case "P2022":
+                responseJson["message"] = `Column ${name} doesn't exist on database table`;
                 responseJson["status"] = HttpStatus.BAD_REQUEST;
 
                 response.status(HttpStatus.BAD_REQUEST).json(responseJson);

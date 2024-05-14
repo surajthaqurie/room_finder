@@ -1,36 +1,43 @@
 import jwt from "jsonwebtoken";
-import { env } from "src/configs";
+import { Logger } from "./logger";
 
 export class JsonWebToken {
-    generateJWT() {
+    generateJWT(jwtPayload: { id: string }, JWT_SECRET: string, JWT_EXPIRES: string, APP_URL: string) {
+        const logger = Logger(JsonWebToken.name + "-generateJWT");
         try {
             return jwt.sign(
                 {
-                    user: "userInfo.id",
-                    role: "userInfo.role"
+                    userId: jwtPayload.id
                 },
-                process.env.JWT_SECRET as string,
+                JWT_SECRET,
                 {
                     algorithm: "HS256",
-                    issuer: env.appConfig.APP_URL as string,
-                    expiresIn: process.env.JWT_EXPIRES as string
+                    issuer: APP_URL,
+                    expiresIn: JWT_EXPIRES
                 }
             );
         } catch (error) {
+            logger.error(error);
             throw error;
         }
     }
 
-    verifyJWT() {
+    verifyJWT(token: string, JWT_SECRET: string) {
+        const logger = Logger(JsonWebToken.name + "-verifyJWT");
         try {
+            return jwt.verify(token, JWT_SECRET);
         } catch (error) {
+            logger.error(error);
             throw error;
         }
     }
 
-    decodeJwt() {
+    decodeJwt(token: string) {
+        const logger = Logger(JsonWebToken.name + "-decodeJwt");
         try {
+            return jwt.decode(token);
         } catch (error) {
+            logger.error(error);
             throw error;
         }
     }
