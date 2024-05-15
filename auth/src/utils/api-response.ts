@@ -41,6 +41,12 @@ export class UnauthorizedResponse extends ApiResponse {
     }
 }
 
+export class NotFoundResponse extends ApiResponse {
+    constructor(message: string) {
+        super(HttpStatus.NOT_FOUND, false, message);
+    }
+}
+
 export class ForbiddenResponse extends ApiResponse {
     constructor(message: string) {
         super(HttpStatus.FORBIDDEN, false, message);

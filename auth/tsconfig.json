@@ -110,5 +110,6 @@
     "exclude": ["node_modules"],
     "ts-node": {
         "require": ["tsconfig-paths/register"]
-    }
+    },
+    "files": ["custom.d.ts"]
 }

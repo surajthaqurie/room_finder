@@ -1,35 +1,28 @@
 import { NextFunction, Request, Response } from "express";
 import { API_ERROR_MESSAGE_CONSTANT } from "src/common/constant";
-import { JsonWebToken, UnauthorizedResponse } from "src/utils";
+import { JsonWebToken, UnauthorizedRequestError } from "src/utils";
+import { JwtPayload } from "jsonwebtoken";
 
 export const isAuthenticate = (config: { tokenSecret: string }) => {
     const jsonWebToken = new JsonWebToken();
 
-    return (req: Request, res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
         try {
             let token: string | undefined;
 
             token = (req.headers["Authorization"] as string) || req.headers["authorization"];
-            if (!token) throw new UnauthorizedResponse(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_USER_INVALID_TOKEN);
-
+            if (!token) throw new UnauthorizedRequestError(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_INVALID_TOKEN);
             token = token.replace("Bearer ", "");
 
             // Verify the token
-            const user = jsonWebToken.verifyJWT(token, config.tokenSecret);
-            console.log("🚀 ~ IsAuthenticate ~ return ~ user:", user);
+            const decodedUser = jsonWebToken.verifyJWT(token, config.tokenSecret) as JwtPayload;
+            if (!decodedUser) throw new UnauthorizedRequestError(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_INVALID_TOKEN);
 
-            // Token is valid, proceed with the request
-            // req.user = decoded;
+            req.userId = decodedUser.userId;
+
             return next();
         } catch (error) {
-            console.log("🚀 ~ return ~ error:", error);
-            /*   if (error.name === "TokenExpiredError") {
-            return sendUnAuthorizedError(res);
-          } else {
-            return next(error);
-          } */
-
-            return next(error);
+            throw new UnauthorizedRequestError(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_INVALID_TOKEN);
         }
     };
 };

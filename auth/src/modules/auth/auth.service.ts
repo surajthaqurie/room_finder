@@ -1,10 +1,9 @@
 import { ILoginPayload, ISignupPayload, IAuthUpdatePayload } from "src/common/interface";
 import { AUTH_MESSAGE_CONSTANT } from "src/common/constant";
 import { Auth } from "./auth.schema";
-import { ConflictRequestError, BadRequestError, NotFoundError, BadRequestResponse } from "@node_helper/error-handler";
 import { AuthRegisterProducer } from "./auth.producer";
 import { updateValidation } from "./auth.validation";
-import { BcryptHelper, JsonWebToken } from "src/utils";
+import { BadRequestError, BcryptHelper, ConflictRequestError, JsonWebToken, NotFoundError } from "src/utils";
 import { env } from "src/configs";
 
 export class AuthService {
@@ -52,7 +51,11 @@ export class AuthService {
             throw new BadRequestError(error.message);
         }
 
-        return user;
+        return {
+            _id: user._id,
+            email: user.email,
+            username: user.username
+        };
     }
 
     public async login(payload: ILoginPayload): Promise<{ accessToken: string }> {
@@ -74,7 +77,7 @@ export class AuthService {
 
     public async updateUser(payload: IAuthUpdatePayload) {
         const { error, value } = updateValidation(payload);
-        if (error) throw new BadRequestResponse(error.details[0].message);
+        if (error) throw new BadRequestError(error.details[0].message);
 
         const { id, ...restPayload } = value;
         const user = await Auth.findByIdAndUpdate(id, restPayload, { new: true });

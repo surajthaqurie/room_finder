@@ -7,5 +7,5 @@ data:
   NODE_ENV: "development"
   APP_NAME: "RoomFinder"
   JWT_SECRET: "mySecret@jwt123" # TODO: keep in the secrets
-  JWT_EXPIRES: "12h"
+  JWT_EXPIRES: "12h" # ["10h", "20d", "120(ms)", "120s"]
   JWT_HASH_ALGORITHM: "HS256"

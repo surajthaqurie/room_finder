@@ -1,6 +1,6 @@
-import { BadRequestError } from "@node_helper/error-handler";
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
+import { BadRequestError } from "src/utils";
 
 export const dbErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     if (err.code === 11000) {

@@ -8,6 +8,7 @@ import appRouter from "./src/routes";
 import { DbConnection, Logger, kafkaClient } from "./src/utils";
 import { AuthDeleteConsumer, AuthEnableDisableConsumer, AuthUpdateConsumer, AuthUserCreateTopic } from "src/modules/auth";
 import { dbErrorHandler, errorHandler } from "src/middleware";
+import { env } from "src/configs";
 
 export class App {
     public app: express.Application;
@@ -72,7 +73,6 @@ export class App {
 
     private async errorHandlerMiddleware() {
         this.app.use(dbErrorHandler);
-        // this.app.use(errorHandler);
-        this.app.use(errorHandler);
+        this.app.use(errorHandler(env.appConfig.NODE_ENV));
     }
 }
