@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { UserService } from "./user.service";
 import { USER_MESSAGE_CONSTANT } from "src/common/constant";
 import { userRegisterValidation, userUpdateValidation } from "./user.validation";
-import { BadRequestError, Logger, SuccessResponse } from "src/utils";
+import { BadRequestError, Logger, SuccessCreatedResponse, SuccessResponse } from "src/utils";
 
 export class UserController {
     userService: UserService;
@@ -18,12 +18,7 @@ export class UserController {
             if (error) throw new BadRequestError(error.details[0].message);
 
             const user = await this.userService.registerUser(value);
-
-            return res.status(201).json({
-                success: true,
-                message: USER_MESSAGE_CONSTANT.USER_CREATED_SUCCESSFULLY,
-                data: user
-            });
+            return new SuccessCreatedResponse(USER_MESSAGE_CONSTANT.USER_CREATED_SUCCESSFULLY, user).sendResponse(res);
         } catch (error) {
             logger.error(error);
             return next(error);
@@ -49,7 +44,7 @@ export class UserController {
     getUser = async (req: Request, res: Response, next: NextFunction) => {
         const logger = Logger(UserController.name + "-getUser");
         try {
-            const user = await this.userService.getUser(req.params.id);
+            const user = await this.userService.getUser(req.userId);
             return new SuccessResponse(USER_MESSAGE_CONSTANT.USERS_FETCHED_SUCCESSFULLY, user).sendResponse(res);
         } catch (error) {
             logger.error(error);
@@ -63,8 +58,7 @@ export class UserController {
             const { error, value } = userUpdateValidation(req.body);
             if (error) throw new BadRequestError(error.details[0].message);
 
-            const userId = req.params.id;
-            const user = await this.userService.updateUser(userId, value);
+            const user = await this.userService.updateUser(req.userId, value);
             return new SuccessResponse(USER_MESSAGE_CONSTANT.USER_UPDATED_SUCCESSFULLY, user).sendResponse(res);
         } catch (error) {
             logger.error(error);
@@ -75,8 +69,7 @@ export class UserController {
     enableDisableUser = async (req: Request, res: Response, next: NextFunction) => {
         const logger = Logger(UserController.name + "-enableDisableUser");
         try {
-            const userId = req.params.id;
-            const { message, data } = await this.userService.enableDisableUser(userId);
+            const { message, data } = await this.userService.enableDisableUser(req.userId);
             return new SuccessResponse(message, data).sendResponse(res);
         } catch (error) {
             logger.error(error);
@@ -87,8 +80,7 @@ export class UserController {
     deleteUser = async (req: Request, res: Response, next: NextFunction) => {
         const logger = Logger(UserController.name + "-deleteUser");
         try {
-            const userId = req.params.id;
-            const user = await this.userService.deleteUser(userId);
+            const user = await this.userService.deleteUser(req.userId);
 
             return new SuccessResponse(USER_MESSAGE_CONSTANT.USER_DELETED_SUCCESSFULLY, user).sendResponse(res);
         } catch (error) {

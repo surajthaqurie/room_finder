@@ -4,7 +4,7 @@ metadata:
   name: room-finder
 manifests:
    rawYaml:
-      - ./infra/k8s/deployments/user*
+      - ./infra/k8s/deployments/*
       - ./infra/k8s/secrets/*
       - ./infra/k8s/configs/*
       - ./infra/k8s/kafka/*

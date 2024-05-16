@@ -11,18 +11,18 @@ export const isAuthenticate = (config: { tokenSecret: string }) => {
             let token: string | undefined;
 
             token = (req.headers["Authorization"] as string) || req.headers["authorization"];
-            if (!token) throw new UnauthorizedRequestError(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_INVALID_TOKEN);
+            if (!token) return next(new UnauthorizedRequestError(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_INVALID_TOKEN));
             token = token.replace("Bearer ", "");
 
             // Verify the token
             const decodedUser = jsonWebToken.verifyJWT(token, config.tokenSecret) as JwtPayload;
-            if (!decodedUser) throw new UnauthorizedRequestError(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_INVALID_TOKEN);
+            if (!decodedUser) return next(new UnauthorizedRequestError(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_INVALID_TOKEN));
 
             req.userId = decodedUser.userId;
 
             return next();
         } catch (error) {
-            throw new UnauthorizedRequestError(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_INVALID_TOKEN);
+            return next(new UnauthorizedRequestError(API_ERROR_MESSAGE_CONSTANT.UNAUTHORIZED_INVALID_TOKEN));
         }
     };
 };
