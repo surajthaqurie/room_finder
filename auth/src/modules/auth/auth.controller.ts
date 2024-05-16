@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AuthService } from "./auth.service";
 import { loginValidation, signupValidation } from "./auth.validation";
 import { AUTH_MESSAGE_CONSTANT } from "../../common/constant";
-import { BadRequestError, Logger } from "src/utils";
+import { BadRequestError, Logger, SuccessCreatedResponse, SuccessResponse } from "src/utils";
 
 export class AuthController {
     authService: AuthService;
@@ -19,11 +19,7 @@ export class AuthController {
 
             const user = await this.authService.signup(value);
 
-            return res.status(201).json({
-                success: true,
-                message: AUTH_MESSAGE_CONSTANT.USER_CREATED_SUCCESSFULLY,
-                data: user
-            });
+            return new SuccessCreatedResponse(AUTH_MESSAGE_CONSTANT.USER_SIGNUP_SUCCESS, user).sendResponse(res);
         } catch (error) {
             logger.error(error);
             return next(error);
@@ -37,11 +33,7 @@ export class AuthController {
             if (error) throw new BadRequestError(error.details[0].message);
 
             const user = await this.authService.login(value);
-
-            return res.status(200).json({
-                success: true,
-                data: user
-            });
+            return new SuccessResponse(AUTH_MESSAGE_CONSTANT.USER_LOGIN_SUCCESS, user).sendResponse(res);
         } catch (error) {
             logger.error(error);
             return next(error);

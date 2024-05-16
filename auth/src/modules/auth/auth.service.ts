@@ -1,4 +1,4 @@
-import { ILoginPayload, ISignupPayload, IAuthUpdatePayload } from "src/common/interface";
+import { ILoginPayload, ISignupPayload, IAuthUpdatePayload, ISignupResponse } from "src/common/interface";
 import { AUTH_MESSAGE_CONSTANT } from "src/common/constant";
 import { Auth } from "./auth.schema";
 import { AuthRegisterProducer } from "./auth.producer";
@@ -15,7 +15,7 @@ export class AuthService {
         this.jsonWebToken = new JsonWebToken();
     }
 
-    public async signup(payload: ISignupPayload) {
+    public async signup(payload: ISignupPayload): Promise<ISignupResponse> {
         if (payload.password !== payload.confirmPassword) throw new BadRequestError(AUTH_MESSAGE_CONSTANT.PASSWORD_AND_CONFIRM_PASSWORD_NOT_MATCHED);
 
         const email_taken = await Auth.findOne({ email: payload.email });

@@ -36,3 +36,9 @@ export interface IAuthRegister {
     username: string;
     address: string;
 }
+
+export interface ISignupResponse {
+    _id: string;
+    email: string;
+    username: string;
+}
