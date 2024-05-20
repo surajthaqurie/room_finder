@@ -20,8 +20,7 @@ export class UserService {
     }
 
     public async getUser(id: string) {
-        const user = await User.findById(id);
-
+        const user = await User.findOne({ _id: id });
         if (!user) throw new NotFoundError(USER_MESSAGE_CONSTANT.USER_RECORD_NOT_FOUND);
 
         return user;

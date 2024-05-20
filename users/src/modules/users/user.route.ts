@@ -9,7 +9,7 @@ const userController = new UserController();
 // TODO: Session middleware
 userRouter.route("/").get(isAuthenticate({ tokenSecret: env.jwtConfig.JWT_SECRET }), userController.getUsers);
 userRouter
-    .route("/:id")
+    .route("/me")
     .get(isAuthenticate({ tokenSecret: env.jwtConfig.JWT_SECRET }), userController.getUser)
     .put(isAuthenticate({ tokenSecret: env.jwtConfig.JWT_SECRET }), userController.updateUser)
     .delete(isAuthenticate({ tokenSecret: env.jwtConfig.JWT_SECRET }), userController.deleteUser);
