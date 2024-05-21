@@ -1,18 +1,21 @@
-import { ILoginPayload, ISignupPayload, IAuthUpdatePayload } from "src/common/interface";
+import { ILoginPayload, ISignupPayload, IAuthUpdatePayload, ISignupResponse } from "src/common/interface";
 import { AUTH_MESSAGE_CONSTANT } from "src/common/constant";
 import { Auth } from "./auth.schema";
-import { BcryptHelper } from "../../utils";
-import { ConflictRequestError, BadRequestError, NotFoundError, BadRequestResponse } from "@node_helper/error-handler";
 import { AuthRegisterProducer } from "./auth.producer";
 import { updateValidation } from "./auth.validation";
+import { BadRequestError, BcryptHelper, ConflictRequestError, JsonWebToken, NotFoundError } from "src/utils";
+import { env } from "src/configs";
 
 export class AuthService {
     bcryptHelper: BcryptHelper;
+    jsonWebToken: JsonWebToken;
+
     constructor() {
         this.bcryptHelper = new BcryptHelper();
+        this.jsonWebToken = new JsonWebToken();
     }
 
-    public async signup(payload: ISignupPayload) {
+    public async signup(payload: ISignupPayload): Promise<ISignupResponse> {
         if (payload.password !== payload.confirmPassword) throw new BadRequestError(AUTH_MESSAGE_CONSTANT.PASSWORD_AND_CONFIRM_PASSWORD_NOT_MATCHED);
 
         const email_taken = await Auth.findOne({ email: payload.email });
@@ -48,10 +51,14 @@ export class AuthService {
             throw new BadRequestError(error.message);
         }
 
-        return user;
+        return {
+            _id: user._id,
+            email: user.email,
+            username: user.username
+        };
     }
 
-    public async login(payload: ILoginPayload) {
+    public async login(payload: ILoginPayload): Promise<{ accessToken: string }> {
         const user = await Auth.findOne({ email: payload.email }).select({
             password: 1,
             isDeleted: 1
@@ -64,12 +71,13 @@ export class AuthService {
 
         if (user.isDeleted) throw new BadRequestError(AUTH_MESSAGE_CONSTANT.DISABLED_ACCOUNT);
 
-        return user;
+        const accessToken = this.jsonWebToken.generateJWT({ id: user._id }, env.jwtConfig.JWT_SECRET, env.jwtConfig.JWT_EXPIRES, env.appConfig.APP_URL);
+        return { accessToken };
     }
 
     public async updateUser(payload: IAuthUpdatePayload) {
         const { error, value } = updateValidation(payload);
-        if (error) throw new BadRequestResponse(error.details[0].message);
+        if (error) throw new BadRequestError(error.details[0].message);
 
         const { id, ...restPayload } = value;
         const user = await Auth.findByIdAndUpdate(id, restPayload, { new: true });

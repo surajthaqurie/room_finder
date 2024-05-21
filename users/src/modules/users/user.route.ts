@@ -2,11 +2,11 @@ import { Router } from "express";
 import { UserController } from "./user.controller";
 
 const userRouter = Router();
+const userController = new UserController();
 
-userRouter.route("/").get(new UserController().getUsers);
-
-userRouter.route("/:id").get(new UserController().getUser).put(new UserController().updateUser).delete(new UserController().deleteUser);
-
-userRouter.route("/enable-disable/:id").patch(new UserController().enableDisableUser);
+// TODO: Session middleware
+userRouter.route("/").get(userController.getUsers);
+userRouter.route("/me").get(userController.getUser).put(userController.updateUser).delete(userController.deleteUser);
+userRouter.route("/enable-disable/:id").patch(userController.enableDisableUser);
 
 export { userRouter };

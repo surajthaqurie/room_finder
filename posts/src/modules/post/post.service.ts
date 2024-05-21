@@ -8,10 +8,10 @@ import { Posts, Status } from "@prisma/client";
 export class PostService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async createPost(createPostDto: CreatePostDto): Promise<Posts> {
+    async createPost(createPostDto: CreatePostDto, userId: string): Promise<Posts> {
         const logger = new Logger(PostService.name + "-createPost");
         try {
-            const post = await this.prismaService.posts.create({ data: { ...createPostDto, userId: "userId" } });
+            const post = await this.prismaService.posts.create({ data: { ...createPostDto, userId } });
             if (!post) throw new BadRequestException(POST_MESSAGE.POST_CREATE_FAIL);
 
             return post;
@@ -24,7 +24,7 @@ export class PostService {
     async getPosts(status: Status): Promise<Posts[]> {
         const logger = new Logger(PostService.name + "-getPosts");
         try {
-            if (Object.values(status).indexOf(status) == -1) throw new BadRequestException(POST_MESSAGE.INVALID_STATUS);
+            if (status && Object.values(Status).indexOf(status) == -1) throw new BadRequestException(POST_MESSAGE.INVALID_STATUS);
             return this.prismaService.posts.findMany({ where: { status } });
         } catch (err) {
             logger.error(err);
@@ -35,7 +35,7 @@ export class PostService {
     async getCurrentUserPosts(userId: string, status: Status): Promise<Posts[]> {
         const logger = new Logger(PostService.name + "-getCurrentUserPosts");
         try {
-            if (Object.values(status).indexOf(status) == -1) throw new BadRequestException(POST_MESSAGE.INVALID_STATUS);
+            if (status && Object.values(Status).indexOf(status) == -1) throw new BadRequestException(POST_MESSAGE.INVALID_STATUS);
             return this.prismaService.posts.findMany({ where: { userId, status } });
         } catch (err) {
             logger.error(err);

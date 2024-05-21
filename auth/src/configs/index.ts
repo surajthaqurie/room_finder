@@ -1,3 +1,1 @@
-import { default as env } from "./app.config";
-
-export { env };
+export * from "./app.config";

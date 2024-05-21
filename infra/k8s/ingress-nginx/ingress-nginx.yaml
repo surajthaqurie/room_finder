@@ -27,6 +27,13 @@ spec:
                 name: user-service
                 port: 
                   number: 4001
+          - path: /api/v1/post
+            pathType: Prefix
+            backend:
+              service:
+                name: post-service
+                port: 
+                  number: 4003
           - path: /k8s
             pathType: Prefix
             backend:

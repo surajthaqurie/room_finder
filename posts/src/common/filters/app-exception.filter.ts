@@ -1,6 +1,7 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { Response } from "express";
+import { ERROR_MESSAGE_CONSTANT } from "../messages";
 
 type IErrorResponse = { message: string };
 interface IResponseJson {
@@ -35,7 +36,7 @@ export class AppExceptionFilter implements ExceptionFilter {
             const responseJson = {
                 success: false,
                 status: statusCode,
-                message: "Internal server error: " + errorMessage
+                message: `${ERROR_MESSAGE_CONSTANT.INTERNAL_SERVER_ERROR}: ${errorMessage}`
             };
 
             this.logger(request, responseJson);

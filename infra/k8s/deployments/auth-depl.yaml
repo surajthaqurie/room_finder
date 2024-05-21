@@ -45,8 +45,8 @@ spec:
           env:
             - name: NODE_ENV
               valueFrom:
-                secretKeyRef:
-                   name: auth-service-secret
+                configMapKeyRef:
+                   name: app-config
                    key: NODE_ENV        
             - name: PORT
               valueFrom:
@@ -60,8 +60,8 @@ spec:
                    key: APP_URL        
             - name: APP_NAME
               valueFrom:
-                secretKeyRef:
-                   name: auth-service-secret
+                configMapKeyRef:
+                   name: app-config
                    key: APP_NAME        
             - name: DATABASE_URL
               valueFrom:
@@ -73,6 +73,21 @@ spec:
                 secretKeyRef:
                    name: auth-service-secret
                    key: KAFKA_HOST        
+            - name: JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                   name: app-config
+                   key: JWT_SECRET        
+            - name: JWT_EXPIRES
+              valueFrom:
+                configMapKeyRef:
+                   name: app-config
+                   key: JWT_EXPIRES        
+            - name: JWT_HASH_ALGORITHM
+              valueFrom:
+                configMapKeyRef:
+                   name: app-config
+                   key: JWT_HASH_ALGORITHM        
         
           # Defines the ports to open in the container.
           # ports:

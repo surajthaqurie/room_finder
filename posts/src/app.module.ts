@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule } from "@nestjs/throttler";
-import { KafkaModule, PrismaModule } from "./utils";
+import { JwtStrategyModule, KafkaModule, PrismaModule } from "./utils";
 import { validateEnv } from "./app-env-validation";
-import { PostModule } from "./components/post/post.module";
-import { UserModule } from "./components/users/user.module";
+import { PostModule } from "./modules/post/post.module";
+import { UserModule } from "./modules/users/user.module";
 
 @Module({
     imports: [
@@ -15,6 +15,7 @@ import { UserModule } from "./components/users/user.module";
                 limit: 10
             }
         ]),
+        JwtStrategyModule,
         PrismaModule,
         PostModule,
         KafkaModule,
