@@ -1,6 +1,7 @@
 import { ArgumentsHost, Catch, HttpStatus, Logger } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 import { Prisma } from "@prisma/client";
+import { ERROR_MESSAGE_CONSTANT } from "../messages";
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaExceptionFilter extends BaseExceptionFilter {
@@ -16,7 +17,7 @@ export class PrismaExceptionFilter extends BaseExceptionFilter {
         const name = exception.meta?.column || exception.meta?.target;
         const responseJson = {
             success: false,
-            message: "Internal Server Error",
+            message: ERROR_MESSAGE_CONSTANT.INTERNAL_SERVER_ERROR,
             status: HttpStatus.INTERNAL_SERVER_ERROR
         };
         switch (exception.code) {
