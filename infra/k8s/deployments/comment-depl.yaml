@@ -1,21 +1,21 @@
 apiVersion: apps/v1 
 kind: Deployment 
 metadata:
-  name: user-deployment 
+  name: comment-deployment 
   namespace: kafka
 spec:
   replicas: 1 
   selector: 
     matchLabels: 
-      app: user
+      app: comment
   template:
     metadata:
       labels:
-        app: user
+        app: comment
     spec:
       containers:
-        - name: room-finder-user
-          image: surajthaqurie/roomfinder-userservice
+        - name: room-finder-comment
+          image: surajthaqurie/roomfinder-commentservice
           env:
             - name: NODE_ENV
               valueFrom:
@@ -25,12 +25,12 @@ spec:
             - name: PORT
               valueFrom:
                 secretKeyRef:
-                   name: user-service-secret
+                   name: comment-service-secret
                    key: PORT        
             - name: APP_URL
               valueFrom:
                 secretKeyRef:
-                   name: user-service-secret
+                   name: comment-service-secret
                    key: APP_URL        
             - name: APP_NAME
               valueFrom:
@@ -41,11 +41,11 @@ spec:
               valueFrom:
                 secretKeyRef:
                    name: db-service-secret
-                   key: USER_DATABASE_URL        
+                   key: COMMENT_DATABASE_URL        
             - name: KAFKA_HOST
               valueFrom:
                 secretKeyRef:
-                   name: user-service-secret
+                   name: comment-service-secret
                    key: KAFKA_HOST        
             - name: JWT_SECRET
               valueFrom:
@@ -84,14 +84,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: user
-  name: user-service
+    app: comment
+  name: comment-service
   namespace: kafka
 spec:
   selector:
-    app: user
+    app: comment
   ports:
     - name: auth
       protocol: TCP
-      port: 4001
-      targetPort: 4001
+      port: 4004
+      targetPort: 4004

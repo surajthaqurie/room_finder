@@ -1,37 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: post-postgres-deployment
+  name: comment-mongo-deployment
   namespace: kafka
+
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: post-postgres
+      app: comment-mongo
   template:
     metadata:
       labels:
-        app: post-postgres
+        app: comment-mongo
     spec:
       containers:
-        - name: post-postgres
-          image: postgres
-          env:
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: db-service-secret
-                  key: POSTGRES_DB_PASSWORD
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: db-service-secret
-                  key: POSTGRES_DB_USER
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-service-secret
-                  key: POST_SERVICE_DB
+        - name: comment-mongo
+          image: mongo
 
           # resources:
           #   # Specifies the maximum amount of CPU and memory that the container is allowed to use.
@@ -48,13 +33,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: post-postgres-service
+  name: comment-mongo-service
   namespace: kafka
 spec:
   selector:
-    app: post-postgres
+    app: comment-mongo
   ports:
     - name: database
       protocol: TCP
-      port: 5432
-      targetPort: 5432
+      port: 27017
+      targetPort: 27017
