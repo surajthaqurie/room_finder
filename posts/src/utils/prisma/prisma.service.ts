@@ -1,13 +1,14 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Injectable, OnModuleInit } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-    constructor() {
+    constructor(private configService: ConfigService) {
         super({
             datasources: {
                 db: {
-                    url: process.env.DATABASE_URL
+                    url: configService.get<string>("DATABASE_URL")
                 }
             }
         });
@@ -15,8 +16,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     async onModuleInit() {
         await this.$connect()
-            .then(() => console.log('Database connected successfully..'))
-            .catch((err) => console.log('Unable to connect database..', err));
+            .then(() => console.log("Database connected successfully.."))
+            .catch((err) => console.log("Unable to connect database..", err));
     }
 
     async onModuleDestroy() {

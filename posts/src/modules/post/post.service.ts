@@ -11,7 +11,7 @@ export class PostService {
     async createPost(createPostDto: CreatePostDto, userId: string): Promise<Posts> {
         const logger = new Logger(PostService.name + "-createPost");
         try {
-            const post = await this.prismaService.posts.create({ data: { ...createPostDto, userId } });
+            const post = await this.prismaService.posts.create({ data: { ...createPostDto, userId, imageUrl: "imageurl" } });
             if (!post) throw new BadRequestException(POST_MESSAGE.POST_CREATE_FAIL);
 
             return post;
