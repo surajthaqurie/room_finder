@@ -29,6 +29,7 @@ export class PostService {
                 { path: "owner", select: "firstName lastName isActive" },
                 {
                     path: "comments",
+                    options: { sort: { createdAt: 1 } },
                     populate: {
                         path: "authorId",
                         select: "firstName lastName isActive"
@@ -52,7 +53,7 @@ export class PostService {
     async addComment(postId: string, commentId: string): Promise<IPost> {
         const logger = new Logger(PostService.name + "-addComment");
         try {
-            const comment = await this.postModel.findByIdAndUpdate(
+            const post = await this.postModel.findByIdAndUpdate(
                 postId,
                 {
                     $push: { comments: commentId }
@@ -60,9 +61,31 @@ export class PostService {
                 { new: true, useFindAndModify: false }
             );
 
-            if (!comment) throw new BadRequestException(POST_MESSAGE.UNABLE_ADD_COMMENT);
+            if (!post) throw new BadRequestException(POST_MESSAGE.UNABLE_TO_ADD_COMMENT);
 
-            return comment;
+            return post;
+        } catch (err) {
+            logger.error(err);
+            throw err;
+        }
+    }
+
+    async removeComment(postId: string, commentId: string): Promise<IPost> {
+        const logger = new Logger(PostService.name + "-removeComment");
+        try {
+            await this.validPost(postId);
+
+            const post = await this.postModel.findByIdAndUpdate(
+                postId,
+                {
+                    $pull: { comments: commentId }
+                },
+                { new: true, useFindAndModify: false }
+            );
+
+            if (!post) throw new BadRequestException(POST_MESSAGE.UNABLE_TO_REMOVE_COMMENT);
+
+            return post;
         } catch (err) {
             logger.error(err);
             throw err;

@@ -57,6 +57,7 @@ export class CommentService {
             const deletedComment = await this.commentModel.findByIdAndDelete(comment._id);
             if (!deletedComment) throw new BadRequestException(COMMENT_MESSAGE.COMMENT_DELETE_FAIL);
 
+            await this.postService.addComment(deletedComment._id, comment._id);
             return deletedComment;
         } catch (err) {
             logger.error(err);
