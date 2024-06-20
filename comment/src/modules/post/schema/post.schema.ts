@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose from "mongoose";
 import { PostStatus } from "../enum";
+import { NextFunction } from "express";
+import { IPost } from "../interface";
 
 @Schema({ timestamps: true })
 export class Post {
@@ -20,7 +22,22 @@ export class Post {
     status: PostStatus;
 
     @Prop({ type: mongoose.Types.ObjectId, ref: "User", trim: true, required: true })
-    ownerId: string;
+    owner: string;
+
+    @Prop([{ type: mongoose.SchemaTypes.ObjectId, ref: "Comment" }])
+    comments: mongoose.Types.ObjectId[];
 }
 
-export const PostSchema = SchemaFactory.createForClass<Post>(Post);
+const PostSchema = SchemaFactory.createForClass<Post>(Post);
+PostSchema.pre("save", async function (this: IPost, next: NextFunction) {
+    let post = this;
+
+    post.slug = post.title
+        .toLowerCase()
+        .replace(/ /g, "_")
+        .replace(/[^\w-]+/g, "");
+
+    next();
+});
+
+export { PostSchema };

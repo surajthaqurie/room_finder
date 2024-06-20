@@ -1,34 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CommentService } from './comment.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import { Controller, Post, Body, Param, Delete, HttpStatus, Put } from "@nestjs/common";
+import { CommentService } from "./comment.service";
+import { CreateCommentDto } from "./dto/create-comment.dto";
+import { UpdateCommentDto } from "./dto/update-comment.dto";
+import { AppResponse, COMMENT_MESSAGE } from "src/common";
+import { IComment } from "./interface";
 
-@Controller('comment')
+@Controller("comment")
 export class CommentController {
-  constructor(private readonly commentService: CommentService) {}
+    constructor(private readonly commentService: CommentService) {}
 
-  @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create(createCommentDto);
-  }
+    @Post()
+    async create(@Body() createCommentDto: CreateCommentDto): Promise<AppResponse<IComment>> {
+        const userId = "userId";
+        const comment = await this.commentService.addComment(userId, createCommentDto);
+        return new AppResponse<IComment>(COMMENT_MESSAGE.COMMENT_CREATED_SUCCESS).setStatus(HttpStatus.CREATED).setSuccessData(comment);
+    }
 
-  @Get()
-  findAll() {
-    return this.commentService.findAll();
-  }
+    @Put(":id")
+    async updateComment(@Param("id") id: string, @Body() updateCommentDto: UpdateCommentDto): Promise<AppResponse<IComment>> {
+        const userId = "userId";
+        const comment = await this.commentService.updateComment(id, userId, updateCommentDto);
+        return new AppResponse<IComment>(COMMENT_MESSAGE.COMMENT_UPDATED_SUCCESS).setStatus(HttpStatus.CREATED).setSuccessData(comment);
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentService.remove(+id);
-  }
+    @Delete(":id")
+    async deleteComment(@Param("id") id: string) {
+        const userId = "userId";
+        const comment = await this.commentService.deleteComment(id, userId);
+        return new AppResponse<IComment>(COMMENT_MESSAGE.COMMENT_DELETED_SUCCESS).setStatus(HttpStatus.CREATED).setSuccessData(comment);
+    }
 }

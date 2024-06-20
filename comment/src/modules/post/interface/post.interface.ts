@@ -3,12 +3,14 @@ import { PostStatus } from "../enum";
 
 export interface IPost extends Document {
     _id: string;
+    slug: string;
     title: string;
     description: string;
     imageUrl: string;
     location: string;
     status: PostStatus;
-    ownerId: string;
+    owner: string;
+    comments: string[];
     updatedAt: Date;
     createdAt: Date;
 }

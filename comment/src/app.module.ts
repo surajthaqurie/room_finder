@@ -4,6 +4,7 @@ import { validateEnv } from "./app-env-validation";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { CommentModule } from "./modules/comment/comment.module";
 import { MongooseModule } from "@nestjs/mongoose";
+import { PostModule } from "./modules/post/post.module";
 
 @Module({
     imports: [
@@ -22,7 +23,8 @@ import { MongooseModule } from "@nestjs/mongoose";
                 limit: 10
             }
         ]),
-        CommentModule
+        CommentModule,
+        PostModule
     ],
     controllers: [],
     providers: []

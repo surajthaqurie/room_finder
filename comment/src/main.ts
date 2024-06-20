@@ -4,6 +4,7 @@ import helmet from "helmet";
 import * as morgan from "morgan";
 import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { AppExceptionFilter } from "./common/filters";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -13,6 +14,10 @@ async function bootstrap() {
     app.setGlobalPrefix("api/v1");
     app.enableCors({ origin: true });
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+    //Error-exception as global filter
+    // app.useGlobalFilters(new DbExceptionFilter());
+    app.useGlobalFilters(new AppExceptionFilter());
 
     const configService = app.get(ConfigService);
 

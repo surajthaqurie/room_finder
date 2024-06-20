@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import { IComment } from "../interface";
 
-const commentSchema = new mongoose.Schema(
+export const commentSchema = new mongoose.Schema(
     {
         content: {
             type: String,
@@ -14,14 +13,14 @@ const commentSchema = new mongoose.Schema(
         },
         authorId: {
             type: mongoose.Types.ObjectId,
-            ref: "User"
+            ref: "User",
+            required: true
         },
         postId: {
             type: mongoose.Types.ObjectId,
-            ref: "Post"
+            ref: "Post",
+            required: true
         }
     },
     { timestamps: true }
 );
-
-export const Auth = mongoose.model<IComment>("comment", commentSchema);
