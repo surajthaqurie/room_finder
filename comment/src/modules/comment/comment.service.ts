@@ -16,7 +16,6 @@ export class CommentService {
     async addComment(authorId: string, payload: CreateCommentDto): Promise<IComment> {
         const logger = new Logger(CommentService.name + "-addComment");
         try {
-            // Check the post is valid or not
             const post = await this.postService.validPost(payload.postId);
 
             const comment = await this.commentModel.create({ ...payload, authorId });

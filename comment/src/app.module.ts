@@ -6,7 +6,7 @@ import { CommentModule } from "./modules/comment/comment.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { PostModule } from "./modules/post/post.module";
 import { UserModule } from "./modules/user/user.module";
-import { JwtStrategyModule } from "./utils";
+import { JwtStrategyModule, KafkaModule } from "./utils";
 
 @Module({
     imports: [
@@ -26,6 +26,7 @@ import { JwtStrategyModule } from "./utils";
             }
         ]),
         JwtStrategyModule,
+        KafkaModule,
         CommentModule,
         PostModule,
         UserModule

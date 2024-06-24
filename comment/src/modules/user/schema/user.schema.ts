@@ -8,13 +8,10 @@ export class User {
     @Prop({ type: String, trim: true, required: true })
     lastName: string;
 
-    @Prop({ type: String, trim: true, required: true })
-    address: string;
-
-    @Prop({ type: Boolean, trim: true, required: true })
+    @Prop({ type: Boolean, trim: true, required: true, default: false })
     isActive: boolean;
 
-    @Prop({ type: Boolean, trim: true, required: true })
+    @Prop({ type: Boolean, trim: true, required: true, default: false })
     isDeleted: boolean;
 }
 

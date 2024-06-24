@@ -3,27 +3,28 @@ import { Kafka } from "kafkajs";
 import { KAFKA_TOPIC } from "src/utils/kafka/enums";
 import { BaseConsumer } from "src/utils/kafka/baseConsumer";
 import { BaseAdminTopic } from "src/utils/kafka/baseKafkaAdmin";
-import { IUserCreate } from "./interfaces/user.interface";
+import { IUser } from "./interface";
 import { UserService } from "./user.service";
 
-class PostCreateUserTopic extends BaseAdminTopic {
-    readonly topic = KAFKA_TOPIC.USER_CREATE;
+class CommentCreateUserTopic extends BaseAdminTopic {
+    topic: KAFKA_TOPIC = KAFKA_TOPIC.USER_CREATE;
 }
 
-export class UserCreateConsumer extends BaseConsumer<{ data: IUserCreate }> implements OnModuleInit, OnModuleDestroy {
-    groupId: string = "PostCreateUserGroup";
-    topic = KAFKA_TOPIC.USER_CREATE;
-    private readonly topicCreator: PostCreateUserTopic;
+export class UserCreateConsumer extends BaseConsumer<{ data: IUser }> implements OnModuleInit, OnModuleDestroy {
+    groupId: string = "CommentCreateUserGroup";
+    topic: KAFKA_TOPIC = KAFKA_TOPIC.USER_CREATE;
+
+    private readonly topicCreator: CommentCreateUserTopic;
 
     constructor(
         kafka: Kafka,
         private readonly userService: UserService
     ) {
         super(kafka);
-        this.topicCreator = new PostCreateUserTopic(kafka);
+        this.topicCreator = new CommentCreateUserTopic(kafka);
     }
 
-    async onMessage(value: IUserCreate): Promise<void> {
+    async onMessage(value: IUser): Promise<void> {
         await this.userService.createUser(value);
     }
 

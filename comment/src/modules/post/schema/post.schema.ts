@@ -18,7 +18,7 @@ export class Post {
     @Prop({ type: String, trim: true, required: true })
     location: string;
 
-    @Prop({ type: PostStatus, trim: true, required: true })
+    @Prop({ type: String, enum: PostStatus, trim: true, required: true })
     status: PostStatus;
 
     @Prop({ type: mongoose.Types.ObjectId, ref: "User", trim: true, required: true })

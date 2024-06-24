@@ -34,6 +34,13 @@ spec:
                 name: post-service
                 port: 
                   number: 4003
+          - path: /api/v1/comment
+            pathType: Prefix
+            backend:
+              service:
+                name: comment-service
+                port: 
+                  number: 4004
           - path: /k8s
             pathType: Prefix
             backend:
