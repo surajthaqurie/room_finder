@@ -1,7 +1,7 @@
-import { KAFKA_EVENT } from "../enums";
+import { KAFKA_EVENT, KAFKA_TOPIC } from "../enums";
 
 export interface IMessagePayload<T> {
-    key: string;
+    key: KAFKA_TOPIC;
     data: T[];
     event: KAFKA_EVENT;
 }

@@ -14,3 +14,15 @@ export interface IPost extends Document {
     updatedAt: Date;
     createdAt: Date;
 }
+
+export interface IPostCreate {
+    id: string;
+    title: string;
+    description: string;
+    imageUrl: string;
+    location: string;
+    status: PostStatus;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: string;
+}

@@ -1,12 +1,32 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { IPost } from "./interface";
-import { POST_MESSAGE } from "src/common";
+import { IPost, IPostCreate } from "./interface";
+import { POST_MESSAGE, USER_MESSAGE } from "src/common";
+import { UserService } from "../user/user.service";
 
 @Injectable()
 export class PostService {
-    constructor(@InjectModel("Post") private readonly postModel: Model<IPost>) {}
+    constructor(
+        @InjectModel("Post") private readonly postModel: Model<IPost>,
+        private readonly userService: UserService
+    ) {}
+
+    async createPost(payload: IPostCreate) {
+        const logger = new Logger(PostService.name + "-createPost");
+        try {
+            const user = await this.userService.validUser(payload.userId);
+            if (!user) throw new BadRequestException(USER_MESSAGE.USER_NOT_FOUND);
+
+            const post = await this.postModel.findOne({ _id: payload });
+            if (post) throw new ConflictException(POST_MESSAGE.POST_ALREADY_EXIST);
+
+            await this.postModel.create({ ...payload });
+        } catch (err) {
+            logger.error(err);
+            throw err;
+        }
+    }
 
     async validPost(postId: string): Promise<IPost> {
         const logger = new Logger(PostService.name + "-validPost");
