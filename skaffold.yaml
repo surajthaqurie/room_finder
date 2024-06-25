@@ -40,7 +40,6 @@ build:
         manual:
           - src: "*.ts"
             dest: .
-  
     - image: surajthaqurie/roomfinder-commentservice
       context: comment
       docker:

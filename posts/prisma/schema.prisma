@@ -11,6 +11,7 @@ model Posts {
   id          String   @id @unique @default(uuid())
   title       String
   description String
+  imageUrl    String
   location    String
   status      Status   @default(AVAILABLE)
   createdAt   DateTime @default(now())

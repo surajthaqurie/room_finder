@@ -3,18 +3,31 @@ import { PrismaService } from "src/utils/prisma/prisma.service";
 import { CreatePostDto } from "./dto";
 import { POST_MESSAGE } from "src/common";
 import { Posts, Status } from "@prisma/client";
+import { PostCreateProducer } from "./post.producer";
+import { KAFKA_EVENT, KAFKA_TOPIC } from "src/utils/kafka/enums";
 
 @Injectable()
 export class PostService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly postCreateProducer: PostCreateProducer
+    ) {}
 
     async createPost(createPostDto: CreatePostDto, userId: string): Promise<Posts> {
         const logger = new Logger(PostService.name + "-createPost");
         try {
-            const post = await this.prismaService.posts.create({ data: { ...createPostDto, userId } });
-            if (!post) throw new BadRequestException(POST_MESSAGE.POST_CREATE_FAIL);
+            return this.prismaService.$transaction(async (tx) => {
+                const post = await this.prismaService.posts.create({ data: { ...createPostDto, userId } });
+                if (!post) throw new BadRequestException(POST_MESSAGE.POST_CREATE_FAIL);
 
-            return post;
+                await this.postCreateProducer.produce({
+                    data: [post],
+                    event: KAFKA_EVENT.CREATED,
+                    key: KAFKA_TOPIC.POST_CREATE
+                });
+
+                return post;
+            });
         } catch (err) {
             logger.error(err);
             throw err;

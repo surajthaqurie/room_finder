@@ -91,7 +91,7 @@ spec:
   selector:
     app: comment
   ports:
-    - name: auth
+    - name: comment
       protocol: TCP
       port: 4004
       targetPort: 4004

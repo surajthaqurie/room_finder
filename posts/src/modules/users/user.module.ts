@@ -14,10 +14,6 @@ const PostUserCreateConsumerFactory: Provider = {
 
 @Module({
     imports: [PrismaModule],
-    providers: [
-        PostUserCreateConsumerFactory,
-        UserService
-        // UserProducer,
-    ]
+    providers: [PostUserCreateConsumerFactory, UserService]
 })
 export class UserModule {}
